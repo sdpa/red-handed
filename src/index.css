@@ -1,68 +1,78 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, minimalistic font */
+  line-height: 1.6;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: dark; /* Prioritize dark mode as per minimalistic theme */
+  color: #f1f1f1; /* Light grey text for readability on dark backgrounds */
+  background-color: #1a1a1a; /* Darker background for the body */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  /* Red theme colors */
+  --primary-red: #C70039; /* Dark Red */
+  --secondary-red: #FF5733; /* Lighter Red */
+  --accent-red: #900C3F; /* Deep Red */
+  --light-text: #ffffff;
+  --dark-bg: #121212; /* Very dark background for elements */
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex; // Removed to allow App.tsx to control layout
+  place-items: center; // Removed */
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--dark-bg); /* Use a very dark grey for the overall page background */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-red); /* Red color for headings */
+  margin-top: 0; /* Remove default top margin from headings */
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 2.5em; /* Slightly reduced for a cleaner look */
+  line-height: 1.2;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+  border-radius: 6px; /* Slightly less rounded */
+  border: 1px solid var(--primary-red);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-red);
+  color: var(--light-text);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.25s, border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--secondary-red);
+  border-color: var(--secondary-red);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto -webkit-focus-ring-color; /* Default focus outline is fine */
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+a {
+  font-weight: 500;
+  color: var(--secondary-red); /* Links in lighter red */
+  text-decoration: none; /* Remove underline for cleaner look */
+}
+a:hover {
+  color: var(--accent-red); /* Darker red on hover */
+  text-decoration: underline;
+}
+
+/* Ensure App takes full width and height */
+#root {
+  width: 100%;
+  min-height: 100vh;
+  /* text-align: center; // Removed to allow more flexible layouts */
 }

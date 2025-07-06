@@ -1,42 +1,58 @@
+/* App.css - App-specific styles */
+
+/* Remove default browser padding/margin for a cleaner base, if not already handled by index.css body */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Ensures padding and border don't add to element's total width/height */
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  /* max-width: 1280px; // Removing fixed max-width for a more fluid layout */
+  /* margin: 0 auto; // Centering will be handled by specific layout choices or flex container in App.tsx */
+  /* padding: 2rem; // Padding can be applied to specific sections rather than globally here */
+  /* text-align: center; // Avoid global text-align, set it on specific components if needed */
+  min-height: 100vh; /* Ensure app fills the viewport height */
+  display: flex; /* Use flexbox for overall app structure */
+  flex-direction: column; /* Stack children vertically (Header, Home content, etc.) */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+/* Example of how you might style the main content area if needed */
+/* .main-content {
+  flex-grow: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */
+
+/* Placeholder for logo styling if you add a specific class to your SVG or img tag */
+.app-logo {
+  height: 40px; /* Adjust as needed */
+  width: auto;
+  margin-right: 10px;
+  /* Add any filter or transition effects if desired */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* Specific styles for .card if you decide to use this generic class,
+   otherwise, DataCard.tsx inline styles or its own CSS module would handle it.
 .card {
-  padding: 2em;
-}
+  background-color: var(--dark-bg);
+  border: 1px solid var(--accent-red);
+  padding: 1.5em;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+} */
 
-.read-the-docs {
-  color: #888;
+/* Utility class for visually hidden elements, useful for accessibility */
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
