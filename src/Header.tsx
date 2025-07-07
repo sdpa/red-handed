@@ -29,14 +29,14 @@ const Header: React.FC = () => {
           <circle cx="50" cy="45" r="12" fill="var(--light-bg)" />
           <circle cx="50" cy="45" r="6" fill="var(--primary-red)" />
         </svg>
-        <h1 style={{
+        <h4 style={{
           margin: 0,
-          fontSize: '1.5em', // Adjusted for a more subtle header title
+          fontSize: '1.0em', // Adjusted for a more subtle header title
           fontWeight: 600, // Medium-bold
           color: 'var(--text-primary)' // Dark text for title
         }}>
-          Anti-Corruption India
-        </h1>
+          Red Handed
+        </h4>
       </div>
       {/* Placeholder for potential nav items or user profile icon */}
       {/* <div>
