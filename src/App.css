@@ -1,42 +1,131 @@
+/* App.css - App-specific styles */
+
+/* Ensure #root takes full height and uses flex column layout, complementing index.css */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--light-bg-alt); /* Consistent background */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* General container for main content sections if needed */
+.main-container {
+  flex-grow: 1; /* Allows this container to fill available space */
+  padding: 1.5rem; /* Increased padding for more whitespace */
+  width: 100%;
+  max-width: 1280px; /* Optional: constrain max width of content */
+  margin: 0 auto; /* Center content if max-width is set */
+  box-sizing: border-box;
 }
 
-@keyframes logo-spin {
+
+.app-logo {
+  height: 32px; /* Consistent with Header.tsx */
+  width: auto;
+  margin-right: 12px; /* Consistent with Header.tsx */
+  /* fill is handled inline in Header.tsx based on bg */
+}
+
+/* Styling for Radix Dialog (Modal) - Levels.fyi inspired */
+.DialogOverlay {
+  background-color: rgba(21, 21, 21, 0.5); /* Slightly darker overlay, common in modern UIs */
+  position: fixed;
+  inset: 0;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+.DialogContent {
+  background-color: var(--light-bg); /* White background */
+  border-radius: 10px; /* More pronounced border-radius */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08), 0px 16px 32px rgba(0, 0, 0, 0.08); /* Softer, more layered shadow */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 480px; /* Slightly adjusted max-width */
+  max-height: 90vh; /* Increased max-height */
+  padding: 1.75rem; /* Adjusted padding (28px) */
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  z-index: 1001;
+  /* border-top: 5px solid var(--primary-red); Removed top red border for cleaner look */
+  border: 1px solid var(--border-color); /* Subtle border instead */
+}
+.DialogContent:focus {
+  outline: none;
+}
+
+.DialogTitle {
+  margin: 0 0 0.75rem 0; /* Reduced bottom margin */
+  font-weight: 600; /* Consistent with h-tags */
+  color: var(--text-primary); /* Dark text for title */
+  font-size: 1.25rem; /* 20px, consistent with h3 */
+}
+
+.DialogDescription {
+  margin: 0 0 1.25rem 0; /* Adjusted bottom margin */
+  color: var(--text-secondary);
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.6;
+}
+
+.IconButton {
+  font-family: inherit;
+  border-radius: 6px; /* Align with other buttons */
+  height: 32px; /* Standard small button height */
+  width: 32px; /* Standard small button width */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary); /* Neutral color for icon */
+  background-color: transparent;
+  border: 1px solid transparent; /* No border by default */
+  position: absolute;
+  top: 0.75rem; /* Consistent with padding/spacing (12px) */
+  right: 0.75rem; /* Consistent with padding/spacing (12px) */
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.IconButton:hover {
+  background-color: var(--light-bg-alt); /* Subtle hover background */
+  color: var(--text-primary); /* Darken icon on hover */
+}
+.IconButton:focus-visible { /* Use focus-visible for keyboard users */
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.25); /* Consistent red ring */
+}
+
+
+@keyframes overlayShow {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* Utility class for visually hidden elements, useful for accessibility */
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
