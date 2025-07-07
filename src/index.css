@@ -1,78 +1,189 @@
 :root {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, minimalistic font */
-  line-height: 1.6;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif; /* Updated font stack */
+  line-height: 1.5; /* Adjusted base line-height */
   font-weight: 400;
+  font-size: 16px; /* Base font size for rem calculations */
 
-  color-scheme: dark; /* Prioritize dark mode as per minimalistic theme */
-  color: #f1f1f1; /* Light grey text for readability on dark backgrounds */
-  background-color: #1a1a1a; /* Darker background for the body */
+  color-scheme: light;
+  color: var(--text-primary); /* Defined below */
+  background-color: var(--light-bg-alt); /* Defined below */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Red theme colors */
-  --primary-red: #C70039; /* Dark Red */
-  --secondary-red: #FF5733; /* Lighter Red */
-  --accent-red: #900C3F; /* Deep Red */
-  --light-text: #ffffff;
-  --dark-bg: #121212; /* Very dark background for elements */
+  /* Red theme colors - Refined for subtlety */
+  --primary-red: #D32F2F;   /* Slightly less saturated, primary actions, borders */
+  --secondary-red: #E57373; /* Lighter, softer red for hover states, secondary info */
+  --accent-red: #B71C1C;    /* Deeper, more reserved red for subtle accents */
+
+  /* Light Theme Palette - Refined for Levels.fyi style */
+  --light-bg: #ffffff;          /* Pure white for cards, modals */
+  --light-bg-alt: #f7f8fa;      /* Very light gray for page background (Levels.fyi often uses near white) */
+  --text-primary: #1f2328;      /* Dark gray, almost black, for primary text */
+  --text-secondary: #57606a;    /* Medium gray for secondary text, labels */
+  --border-color: #d0d7de;      /* Soft gray for borders (GitHub/Levels.fyi like) */
+  --border-color-strong: #b0b9c3;/* Slightly darker gray for more prominent borders */
+
+  --button-text-color: #ffffff; /* White text for buttons with red background */
+  --button-primary-bg: var(--primary-red);
+  --button-primary-hover-bg: var(--accent-red); /* Darker shade for hover */
+
+  --button-secondary-text: var(--primary-red);
+  --button-secondary-bg: var(--light-bg);
+  --button-secondary-border: var(--border-color);
+  --button-secondary-hover-bg: var(--light-bg-alt);
+  --button-secondary-hover-border: var(--border-color-strong);
+
 }
 
 body {
   margin: 0;
-  /* display: flex; // Removed to allow App.tsx to control layout
-  place-items: center; // Removed */
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--dark-bg); /* Use a very dark grey for the overall page background */
+  background-color: var(--light-bg-alt);
+  color: var(--text-primary);
+  font-size: 1rem; /* Equivalent to 16px */
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--primary-red); /* Red color for headings */
-  margin-top: 0; /* Remove default top margin from headings */
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 h1 {
-  font-size: 2.5em; /* Slightly reduced for a cleaner look */
-  line-height: 1.2;
+  font-size: 2rem;
+  font-weight: 700;
+}
+h2 {
+  font-size: 1.5rem;
+}
+h3 {
+  font-size: 1.25rem;
+}
+h4 {
+  font-size: 1.125rem;
 }
 
-button {
-  border-radius: 6px; /* Slightly less rounded */
-  border: 1px solid var(--primary-red);
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+
+button, .Button {
+  border-radius: 6px; /* Standard border radius */
+  padding: 0.625rem 1.25rem; /* 10px 20px - More padding for a modern feel */
+  font-size: 0.9375rem; /* 15px */
   font-weight: 500;
-  font-family: inherit;
-  background-color: var(--primary-red);
-  color: var(--light-text);
+  font-family: 'Inter', sans-serif; /* Explicitly Inter */
   cursor: pointer;
-  transition: background-color 0.25s, border-color 0.25s;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  border: 1px solid transparent;
+  line-height: 1.4; /* Adjusted line height */
+  text-align: center;
+  display: inline-flex; /* For aligning icons if added later */
+  align-items: center;
+  justify-content: center;
 }
-button:hover {
-  background-color: var(--secondary-red);
-  border-color: var(--secondary-red);
+
+/* Primary Button Styling (Subtle Red) */
+.Button.primary, button:not([class*="Button secondary"]):not([class*="IconButton"]) { /* Target default button if no other class */
+  background-color: var(--button-primary-bg); /* Subtle primary red */
+  color: var(--button-text-color); /* White text */
+  border-color: var(--button-primary-bg);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color; /* Default focus outline is fine */
+.Button.primary:hover, button:not([class*="Button secondary"]):not([class*="IconButton"]):hover {
+  background-color: var(--button-primary-hover-bg); /* Darker subtle red */
+  border-color: var(--button-primary-hover-bg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow on hover */
 }
+
+/* Secondary Button Styling (Neutral / Ghost-like) */
+.Button.secondary {
+  background-color: var(--button-secondary-bg); /* White/Light background */
+  color: var(--text-secondary); /* Darker text for secondary buttons */
+  border-color: var(--button-secondary-border); /* Light gray border */
+}
+.Button.secondary:hover {
+  background-color: var(--button-secondary-hover-bg); /* Slightly off-white hover */
+  border-color: var(--button-secondary-hover-border); /* Slightly darker border */
+  color: var(--text-primary); /* Darken text on hover */
+}
+
+
+button:focus-visible, .Button:focus-visible {
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.25); /* Red ring, matching form input focus */
+}
+
+/* Radix compatibility for open state - can be more specific if needed */
+.Button[data-state="open"] {
+  background-color: var(--accent-red); /* Deeper red when a control is open */
+  border-color: var(--accent-red);
+}
+/* Default button also gets this if it's a trigger */
+button[data-state="open"]:not([class*="Button secondary"]):not([class*="IconButton"]) {
+    background-color: var(--accent-red);
+    border-color: var(--accent-red);
+}
+
 
 a {
   font-weight: 500;
-  color: var(--secondary-red); /* Links in lighter red */
-  text-decoration: none; /* Remove underline for cleaner look */
+  color: var(--primary-red);
+  text-decoration: none;
 }
 a:hover {
-  color: var(--accent-red); /* Darker red on hover */
+  color: var(--secondary-red);
   text-decoration: underline;
 }
 
-/* Ensure App takes full width and height */
 #root {
   width: 100%;
   min-height: 100vh;
-  /* text-align: center; // Removed to allow more flexible layouts */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Radix Form Styles - Levels.fyi inspired */
+.FormField {
+  display: grid; /* Changed from flex to grid for simpler alignment */
+  margin-bottom: 1rem; /* Consistent spacing */
+}
+
+.FormLabel {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500; /* Medium weight */
+  color: var(--text-secondary);
+  margin-bottom: 0.375rem; /* 6px */
+  line-height: 1.4;
+}
+
+.FormControl {
+  background-color: var(--light-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px; /* Slightly more rounded */
+  padding: 0.625rem 0.75rem; /* 10px 12px, adjusted padding */
+  font-size: 0.9375rem; /* 15px */
+  color: var(--text-primary);
+  width: 100%; /* Ensure it takes full width of its container */
+  box-sizing: border-box; /* Important for width calculation */
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.FormControl:focus {
+  outline: none;
+  border-color: var(--primary-red); /* Red border on focus */
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.15); /* Subtle red glow, similar to some modern UIs */
+}
+/* Placeholder styling */
+.FormControl::placeholder {
+  color: var(--border-color-strong); /* Lighter placeholder text */
+  opacity: 1; /* Firefox */
+}
+
+
+.FormMessage {
+  font-size: 0.8125rem; /* 13px */
+  color: var(--primary-red);
+  margin-top: 0.25rem; /* Space above message */
 }

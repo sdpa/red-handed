@@ -1,13 +1,12 @@
 // src/AddCorruptionDataForm.tsx
 import React, { useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import * as Form from '@radix-ui/react-form';
+import { Cross2Icon } from '@radix-ui/react-icons';
+// You might need to create a separate CSS file for form styles or use inline/global styles.
+// For this example, we'll rely on global styles in index.css and App.css for Radix components.
 
-interface AddCorruptionDataFormProps {
-  onClose: () => void;
-  onSubmit: (data: FormData) => void; // Ensure FormData type is defined or imported
-}
-
-// Re-defining FormData interface here if not imported from elsewhere
-interface FormData {
+interface CorruptionFormData {
   state: string;
   district: string;
   amount: string;
@@ -15,8 +14,14 @@ interface FormData {
   date: string;
 }
 
-const AddCorruptionDataForm: React.FC<AddCorruptionDataFormProps> = ({ onClose, onSubmit }) => {
-  const [formData, setFormData] = useState<FormData>({
+interface AddCorruptionDataFormProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (data: CorruptionFormData) => void;
+}
+
+const AddCorruptionDataForm: React.FC<AddCorruptionDataFormProps> = ({ open, onOpenChange, onSubmit }) => {
+  const [formData, setFormData] = useState<CorruptionFormData>({
     state: '',
     district: '',
     amount: '',
@@ -24,7 +29,7 @@ const AddCorruptionDataForm: React.FC<AddCorruptionDataFormProps> = ({ onClose, 
     date: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
@@ -32,122 +37,107 @@ const AddCorruptionDataForm: React.FC<AddCorruptionDataFormProps> = ({ onClose, 
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => { // Radix Form handles e.preventDefault()
     onSubmit(formData);
-    // Consider clearing form or giving feedback, then closing
+    // Optionally reset form:
     // setFormData({ state: '', district: '', amount: '', department: '', date: '' });
-    // onClose();
+    // onOpenChange(false); // Close dialog on submit
   };
-
-  const overlayStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay for focus
-    zIndex: 999,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const formStyle: React.CSSProperties = {
-    backgroundColor: 'var(--dark-bg)', // Use CSS variable
-    padding: '2.5rem', // Increased padding
-    borderRadius: '10px', // More rounded corners
-    boxShadow: '0 5px 20px rgba(0,0,0,0.3)', // Enhanced shadow
-    zIndex: 1000,
-    color: 'var(--light-text)', // Use CSS variable
-    width: 'clamp(320px, 90vw, 550px)', // Adjusted responsive width
-    borderTop: '5px solid var(--primary-red)', // Red accent on top
-  };
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%', // Full width relative to parent
-    padding: '12px', // More padding in input
-    margin: '8px 0 16px 0', // Adjusted margin (top, sides, bottom)
-    borderRadius: '6px', // More rounded inputs
-    border: '1px solid var(--accent-red)', // Use accent red for border
-    backgroundColor: '#2c2c2c', // Slightly lighter dark for input background
-    color: 'var(--light-text)', // Use CSS variable
-    boxSizing: 'border-box', // Include padding and border in the element's total width and height
-  };
-
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    marginBottom: '6px', // Slightly more space for label
-    fontWeight: 'bold',
-    color: 'var(--secondary-red)', // Use secondary red for labels
-  };
-
-  const buttonContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'flex-end', // Align buttons to the right
-    marginTop: '1.5rem', // More space above buttons
-  };
-
-  const buttonStyle: React.CSSProperties = {
-    padding: '12px 24px', // Larger buttons
-    border: 'none',
-    borderRadius: '6px',
-    backgroundColor: 'var(--primary-red)', // Use CSS variable
-    color: 'var(--light-text)', // Use CSS variable
-    cursor: 'pointer',
-    fontSize: '1rem',
-    fontWeight: '500',
-    transition: 'background-color 0.2s ease-in-out',
-  };
-
-  const closeButtonStyle: React.CSSProperties = {
-    ...buttonStyle,
-    backgroundColor: 'transparent', // Make close button less prominent
-    color: 'var(--secondary-red)',
-    border: '1px solid var(--secondary-red)',
-    marginLeft: '10px',
-  };
-
 
   return (
-    <div style={overlayStyle} onClick={onClose}> {/* Close on overlay click */}
-      <div style={formStyle} onClick={e => e.stopPropagation()}> {/* Prevent form click from closing */}
-        <h2 style={{
-            color: 'var(--primary-red)',
-            borderBottom: '2px solid var(--accent-red)',
-            paddingBottom: '0.8rem',
-            marginBottom: '1.5rem', // More space below title
-            textAlign: 'center', // Center title
-            fontSize: '1.6em'
-        }}>Report Corruption Incident</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="state" style={labelStyle}>State</label>
-            <input type="text" name="state" id="state" value={formData.state} onChange={handleChange} style={inputStyle} required />
-          </div>
-          <div>
-            <label htmlFor="district" style={labelStyle}>District</label>
-            <input type="text" name="district" id="district" value={formData.district} onChange={handleChange} style={inputStyle} required />
-          </div>
-          <div>
-            <label htmlFor="amount" style={labelStyle}>Amount (INR)</label>
-            <input type="number" name="amount" id="amount" value={formData.amount} onChange={handleChange} style={inputStyle} required />
-          </div>
-          <div>
-            <label htmlFor="department" style={labelStyle}>Department</label>
-            <input type="text" name="department" id="department" value={formData.department} onChange={handleChange} style={inputStyle} required />
-          </div>
-          <div>
-            <label htmlFor="date" style={labelStyle}>Date of Incident</label>
-            <input type="date" name="date" id="date" value={formData.date} onChange={handleChange} style={inputStyle} required />
-          </div>
-          <div style={buttonContainerStyle}>
-            <button type="button" onClick={onClose} style={closeButtonStyle}>Cancel</button>
-            <button type="submit" style={{...buttonStyle, marginLeft: '10px'}}>Submit Report</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="DialogOverlay" />
+        <Dialog.Content className="DialogContent">
+          <Dialog.Title className="DialogTitle">Report Corruption Incident</Dialog.Title>
+          <Dialog.Description className="DialogDescription">
+            Please provide details about the incident. All fields are required.
+          </Dialog.Description>
+
+          <Form.Root onSubmit={handleSubmit}>
+            <Form.Field className="FormField" name="state">
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <Form.Label className="FormLabel">State</Form.Label>
+                <Form.Message className="FormMessage" match="valueMissing">
+                  Please enter the state
+                </Form.Message>
+              </div>
+              <Form.Control asChild>
+                <input className="FormControl" type="text" value={formData.state} onChange={handleChange} required />
+              </Form.Control>
+            </Form.Field>
+
+            <Form.Field className="FormField" name="district">
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <Form.Label className="FormLabel">District</Form.Label>
+                <Form.Message className="FormMessage" match="valueMissing">
+                  Please enter the district
+                </Form.Message>
+              </div>
+              <Form.Control asChild>
+                <input className="FormControl" type="text" value={formData.district} onChange={handleChange} required />
+              </Form.Control>
+            </Form.Field>
+
+            <Form.Field className="FormField" name="amount">
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <Form.Label className="FormLabel">Amount (INR)</Form.Label>
+                <Form.Message className="FormMessage" match="valueMissing">
+                  Please enter the amount
+                </Form.Message>
+                 <Form.Message className="FormMessage" match="typeMismatch">
+                  Please provide a valid amount
+                </Form.Message>
+              </div>
+              <Form.Control asChild>
+                <input className="FormControl" type="number" value={formData.amount} onChange={handleChange} required />
+              </Form.Control>
+            </Form.Field>
+
+            <Form.Field className="FormField" name="department">
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <Form.Label className="FormLabel">Department</Form.Label>
+                <Form.Message className="FormMessage" match="valueMissing">
+                  Please enter the department
+                </Form.Message>
+              </div>
+              <Form.Control asChild>
+                <input className="FormControl" type="text" value={formData.department} onChange={handleChange} required />
+              </Form.Control>
+            </Form.Field>
+
+            <Form.Field className="FormField" name="date">
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <Form.Label className="FormLabel">Date of Incident</Form.Label>
+                <Form.Message className="FormMessage" match="valueMissing">
+                  Please enter the date
+                </Form.Message>
+              </div>
+              <Form.Control asChild>
+                <input className="FormControl" type="date" value={formData.date} onChange={handleChange} required />
+              </Form.Control>
+            </Form.Field>
+
+            <div style={{ display: 'flex', marginTop: 25, justifyContent: 'flex-end', gap: '1rem' }}>
+              <Dialog.Close asChild>
+                <button type="button" className="Button secondary">Cancel</button>
+                {/* Add a .Button.secondary class for cancel: e.g., light grey bg, red text/border */}
+              </Dialog.Close>
+              <Form.Submit asChild>
+                <button className="Button primary">Submit Report</button>
+                 {/* Add a .Button.primary class or use default button styles */}
+              </Form.Submit>
+            </div>
+          </Form.Root>
+
+          <Dialog.Close asChild>
+            <button className="IconButton" aria-label="Close">
+              <Cross2Icon />
+            </button>
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 };
 

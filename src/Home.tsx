@@ -3,7 +3,6 @@ import { useState } from "react";
 import DataCard from "./DataCard";
 import AddCorruptionDataForm from "./AddCorruptionDataForm";
 
-// Define FormData type if not already defined/imported
 interface CorruptionFormData {
   state: string;
   district: string;
@@ -15,7 +14,7 @@ interface CorruptionFormData {
 const Home = () => {
   const [selectedState, setSelectedState] = useState<string>("");
   const [, setSelectedDistrict] = useState<string>("");
-  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const onSlectedState = (state: string) => {
     setSelectedState(state);
@@ -28,59 +27,55 @@ const Home = () => {
 
   const handleFormSubmit = (data: CorruptionFormData) => {
     console.log("Corruption Data Submitted: ", data);
-    // Here you would typically send data to a backend
-    setIsFormVisible(false); // Close form on submit
+    setIsFormOpen(false);
   };
 
-  // Placeholder data for DataCards
   const totalCorruptionAmount = "₹1,23,45,678";
   const casesReported = "1,500";
   const departmentsAffected = "50";
 
+  // Styles are now more reliant on global CSS and refined variables
+  // Inline styles are minimal, focusing on layout rather than appearance
+
   const homeStyle: React.CSSProperties = {
-    padding: '2rem', // Increased padding for the home page
+    // padding is handled by .main-container in App.css
     display: 'flex',
-    flexDirection: 'column', // Stack main content and button vertically
-    alignItems: 'center', // Center the button
-    gap: '2rem', // Space between map/cards row and the button
-    backgroundColor: 'var(--dark-bg)', // Ensure home bg matches theme
-    flexGrow: 1, // Make Home content take available space
+    flexDirection: 'column',
+    alignItems: 'center', // Center the button below the content row
+    gap: '2rem', // Space between content row and button
+    flexGrow: 1, // Ensure it takes available vertical space
   };
 
   const contentRowStyle: React.CSSProperties = {
     display: 'flex',
-    width: '100%', // Full width for the row
-    gap: '2rem', // Space between map and cards
-    alignItems: 'flex-start', // Align items to the top
+    width: '100%', // Takes full width of .main-container
+    gap: '1.5rem', // Adjusted gap for tighter layout
+    alignItems: 'flex-start',
   };
 
   const mapContainerStyle: React.CSSProperties = {
-    flex: '3', // Map takes more space
-    // marginRight: '2rem', // Replaced by gap in contentRowStyle
-    backgroundColor: 'var(--dark-bg)', // Map background if needed, or make it transparent
-    padding: '1rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+    flex: '2.5',
+    backgroundColor: 'var(--light-bg)', // White background
+    padding: '1.5rem',
+    borderRadius: '8px', // Consistent with DataCard
+    border: `1px solid var(--border-color)`, // Subtle border
+    boxShadow: '0 1px 2px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.02)', // Very subtle shadow
   };
 
   const dataCardsContainerStyle: React.CSSProperties = {
-    flex: '1', // Cards take less space
+    flex: '1',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem', // Space between cards
+    gap: '1rem', // Match DataCard margin
   };
 
-  const addButtonStyle: React.CSSProperties = {
-    // Using global button styles from index.css, but can override or extend here
-    padding: '12px 24px',
-    fontSize: '1.1rem', // Slightly larger font for primary action
-    fontWeight: '600',
-    // margin: '2rem 0', // Centering is handled by parent's alignItems: 'center'
-  };
+  // addButtonStyle can be removed if default button styling from index.css is sufficient
+  // const addButtonStyle: React.CSSProperties = { ... };
 
 
   return (
-    <div style={homeStyle}>
+    // .main-container class from App.css handles padding and max-width
+    <div style={homeStyle} className="main-container">
       <div style={contentRowStyle}>
         <div style={mapContainerStyle}>
           <Map
@@ -95,15 +90,16 @@ const Home = () => {
           <DataCard title="Departments Affected" value={departmentsAffected} />
         </div>
       </div>
-      <button onClick={() => setIsFormVisible(true)} style={addButtonStyle}>
+
+      <button className="Button primary" onClick={() => setIsFormOpen(true)}>
         Report New Incident
       </button>
-      {isFormVisible && (
-        <AddCorruptionDataForm
-          onClose={() => setIsFormVisible(false)}
-          onSubmit={handleFormSubmit}
-        />
-      )}
+
+      <AddCorruptionDataForm
+        open={isFormOpen}
+        onOpenChange={setIsFormOpen}
+        onSubmit={handleFormSubmit}
+      />
     </div>
   );
 };
