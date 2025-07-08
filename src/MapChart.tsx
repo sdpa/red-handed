@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import geoData from "./assets/india.json";
 import type { Feature, Geometry } from "geojson";
+import { useTheme } from '@radix-ui/themes'; // Import useTheme hook
 
 interface Props {
   selectedState?: string;
@@ -13,29 +14,28 @@ const Map = ({ selectedState, onSelectState, onSelectDistrict }: Props) => {
   const ref = useRef<SVGSVGElement>(null);
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const theme = useTheme(); // Access theme properties
 
   useEffect(() => {
     const updateDimensions = () => {
       if (ref.current && ref.current.parentElement) {
         const parentWidth = ref.current.parentElement.clientWidth;
-        // Maintain aspect ratio, e.g., 4:3, or ensure it fits well
-        const newWidth = parentWidth > 0 ? parentWidth : 800; // Fallback width
+        const newWidth = parentWidth > 0 ? parentWidth : 800;
         const newHeight = newWidth * 0.75; // Maintain aspect ratio
         setDimensions({ width: newWidth, height: newHeight });
       }
     };
 
-    updateDimensions(); // Initial call
+    updateDimensions();
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-
   useEffect(() => {
-    if (!ref.current || dimensions.width === 0 || dimensions.height === 0) return;
+    if (!ref.current || dimensions.width === 0 || dimensions.height === 0 || !theme) return;
 
     const svg = d3.select(ref.current);
-    svg.selectAll("*").remove(); // Clear previous renders
+    svg.selectAll("*").remove();
 
     svg.attr('width', dimensions.width).attr('height', dimensions.height);
 
@@ -47,14 +47,14 @@ const Map = ({ selectedState, onSelectState, onSelectDistrict }: Props) => {
       (d) => d.properties.st_nm as string
     );
 
-    // Using refined CSS variables
-    const unselectedFill = getComputedStyle(document.documentElement).getPropertyValue('--light-bg-alt').trim() || '#f0f0f0'; // Very light gray
-    const selectedFill = getComputedStyle(document.documentElement).getPropertyValue('--primary-red').trim(); // Subtle primary red
-    const hoverFill = getComputedStyle(document.documentElement).getPropertyValue('--secondary-red').trim();   // Subtle secondary red
-    // For strokes, use a slightly darker border color or white depending on contrast needs with unselectedFill
-    const strokeColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim() || '#ccc';
-    const selectedStrokeColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-red').trim();
-
+    // Use Radix theme variables. Ensure your theme has these colors defined.
+    // These are examples; you might need to adjust them based on your Radix theme setup.
+    // Fallbacks are provided if CSS variables are not found.
+    const unselectedFill = `var(--gray-3, #f0f0f0)`;
+    const selectedFill = `var(--accent-9, #E53E3E)`; // Default to a red if accent-9 is not set
+    const hoverFill = `var(--accent-8, #FC8181)`;    // Default to a lighter red
+    const strokeColor = `var(--gray-6, #ccc)`;
+    const selectedStrokeColor = `var(--accent-10, #C53030)`; // Darker red for selected stroke
 
     states.forEach((features, stateName) => {
       const isSelected = selectedState === stateName;
@@ -66,28 +66,28 @@ const Map = ({ selectedState, onSelectState, onSelectDistrict }: Props) => {
         .data(features)
         .join("path")
         .attr("d", pathGenerator)
-        .attr("fill", isSelected ? selectedFill : (isHovered ? hoverFill : unselectedFill))
-        .attr("stroke", isSelected ? selectedStrokeColor : strokeColor)
-        .attr("stroke-width", isSelected || isHovered ? 1.5 : 0.7) // Slightly thicker for selected/hovered
+        .style("fill", isSelected ? selectedFill : (isHovered ? hoverFill : unselectedFill))
+        .style("stroke", isSelected ? selectedStrokeColor : strokeColor)
+        .style("stroke-width", isSelected || isHovered ? 1.5 : 0.7)
         .style("cursor", "pointer")
         .on("mouseenter", function () {
           setHoveredState(stateName);
-          if (!isSelected) { // Only change fill if not already selected
-            d3.select(this).attr("fill", hoverFill).attr("stroke-width", 1.5);
+          if (!isSelected) {
+            d3.select(this).style("fill", hoverFill).style("stroke-width", 1.5);
           } else {
-             d3.select(this).attr("stroke-width", 1.5); // Ensure stroke thickens
+            d3.select(this).style("stroke-width", 1.5);
           }
         })
         .on("mouseleave", function () {
           setHoveredState(null);
-          if (!isSelected) { // Revert if not selected
-            d3.select(this).attr("fill", unselectedFill).attr("stroke-width", 0.7);
-          } else { // Revert to selected style
-             d3.select(this).attr("fill", selectedFill).attr("stroke-width", 1.5);
+          if (!isSelected) {
+            d3.select(this).style("fill", unselectedFill).style("stroke-width", 0.7);
+          } else {
+            d3.select(this).style("fill", selectedFill).style("stroke-width", 1.5);
           }
         })
         .on("click", (event, d) => {
-          event.stopPropagation(); // Prevent background click
+          event.stopPropagation();
           if (isSelected) {
             onSelectDistrict?.(d.properties.district as string);
           } else {
@@ -96,14 +96,13 @@ const Map = ({ selectedState, onSelectState, onSelectDistrict }: Props) => {
         });
     });
 
-    svg.on("click", () => { // Background click to deselect
+    svg.on("click", () => {
       onSelectState?.("");
     });
 
-  }, [selectedState, hoveredState, onSelectState, onSelectDistrict, dimensions]);
+  }, [selectedState, hoveredState, onSelectState, onSelectDistrict, dimensions, theme]);
 
-  // SVG style for responsiveness, height will be controlled by `dimensions` state
-  return <svg ref={ref} style={{ display: 'block', width: '100%'}} />;
+  return <svg ref={ref} style={{ display: 'block', width: '100%', backgroundColor: 'var(--gray-1)' }} />;
 };
 
 export default Map;

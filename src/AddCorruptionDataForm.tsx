@@ -1,10 +1,7 @@
 // src/AddCorruptionDataForm.tsx
-import React, { useState } from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
-import * as Form from '@radix-ui/react-form';
+import React, { useState, useEffect } from 'react';
+import { Dialog, Button, Flex, Text, TextField, IconButton, Form } from '@radix-ui/themes';
 import { Cross2Icon } from '@radix-ui/react-icons';
-// You might need to create a separate CSS file for form styles or use inline/global styles.
-// For this example, we'll rely on global styles in index.css and App.css for Radix components.
 
 interface CorruptionFormData {
   state: string;
@@ -20,14 +17,24 @@ interface AddCorruptionDataFormProps {
   onSubmit: (data: CorruptionFormData) => void;
 }
 
+const initialFormData: CorruptionFormData = {
+  state: '',
+  district: '',
+  amount: '',
+  department: '',
+  date: '',
+};
+
 const AddCorruptionDataForm: React.FC<AddCorruptionDataFormProps> = ({ open, onOpenChange, onSubmit }) => {
-  const [formData, setFormData] = useState<CorruptionFormData>({
-    state: '',
-    district: '',
-    amount: '',
-    department: '',
-    date: '',
-  });
+  const [formData, setFormData] = useState<CorruptionFormData>(initialFormData);
+
+  useEffect(() => {
+    // Reset form when dialog opens, if it was closed previously
+    if (open) {
+      setFormData(initialFormData);
+    }
+  }, [open]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -37,103 +44,124 @@ const AddCorruptionDataForm: React.FC<AddCorruptionDataFormProps> = ({ open, onO
     }));
   };
 
-  const handleSubmit = () => { // Radix Form handles e.preventDefault()
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent default form submission
     onSubmit(formData);
-    // Optionally reset form:
-    // setFormData({ state: '', district: '', amount: '', department: '', date: '' });
-    // onOpenChange(false); // Close dialog on submit
+    // onOpenChange(false); // Dialog will be closed by the submit button's Dialog.Close parent
   };
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="DialogOverlay" />
-        <Dialog.Content className="DialogContent">
-          <Dialog.Title className="DialogTitle">Report Corruption Incident</Dialog.Title>
-          <Dialog.Description className="DialogDescription">
+        <Dialog.Overlay style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', inset: 0 }} />
+        <Dialog.Content style={{
+          backgroundColor: 'white',
+          borderRadius: 'var(--radius-3)', // Using Radix radius variable
+          boxShadow: 'hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px',
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '90vw',
+          maxWidth: '450px',
+          maxHeight: '85vh',
+          padding: 'var(--space-5)', // Using Radix spacing
+          overflowY: 'auto'
+        }}>
+          <Dialog.Title>
+            <Text size="5" weight="bold">Report Corruption Incident</Text>
+          </Dialog.Title>
+          <Dialog.Description size="2" mb="4" color="gray">
             Please provide details about the incident. All fields are required.
           </Dialog.Description>
 
           <Form.Root onSubmit={handleSubmit}>
-            <Form.Field className="FormField" name="state">
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                <Form.Label className="FormLabel">State</Form.Label>
-                <Form.Message className="FormMessage" match="valueMissing">
-                  Please enter the state
-                </Form.Message>
-              </div>
-              <Form.Control asChild>
-                <input className="FormControl" type="text" value={formData.state} onChange={handleChange} required />
-              </Form.Control>
-            </Form.Field>
+            <Flex direction="column" gap="3">
+              <Form.Field name="state">
+                <Flex direction="column" gap="1">
+                  <Form.Label>
+                    <Text size="2" weight="medium">State</Text>
+                  </Form.Label>
+                  <TextField.Input name="state" value={formData.state} onChange={handleChange} placeholder="e.g., Maharashtra" required />
+                  <Form.Message match="valueMissing">
+                    <Text size="1" color="red">Please enter the state</Text>
+                  </Form.Message>
+                </Flex>
+              </Form.Field>
 
-            <Form.Field className="FormField" name="district">
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                <Form.Label className="FormLabel">District</Form.Label>
-                <Form.Message className="FormMessage" match="valueMissing">
-                  Please enter the district
-                </Form.Message>
-              </div>
-              <Form.Control asChild>
-                <input className="FormControl" type="text" value={formData.district} onChange={handleChange} required />
-              </Form.Control>
-            </Form.Field>
+              <Form.Field name="district">
+                <Flex direction="column" gap="1">
+                  <Form.Label>
+                    <Text size="2" weight="medium">District</Text>
+                  </Form.Label>
+                  <TextField.Input name="district" value={formData.district} onChange={handleChange} placeholder="e.g., Mumbai" required />
+                  <Form.Message match="valueMissing">
+                     <Text size="1" color="red">Please enter the district</Text>
+                  </Form.Message>
+                </Flex>
+              </Form.Field>
 
-            <Form.Field className="FormField" name="amount">
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                <Form.Label className="FormLabel">Amount (INR)</Form.Label>
-                <Form.Message className="FormMessage" match="valueMissing">
-                  Please enter the amount
-                </Form.Message>
-                 <Form.Message className="FormMessage" match="typeMismatch">
-                  Please provide a valid amount
-                </Form.Message>
-              </div>
-              <Form.Control asChild>
-                <input className="FormControl" type="number" value={formData.amount} onChange={handleChange} required />
-              </Form.Control>
-            </Form.Field>
+              <Form.Field name="amount">
+                <Flex direction="column" gap="1">
+                  <Form.Label>
+                    <Text size="2" weight="medium">Amount (INR)</Text>
+                  </Form.Label>
+                  <TextField.Input name="amount" type="number" value={formData.amount} onChange={handleChange} placeholder="e.g., 50000" required />
+                   <Form.Message match="valueMissing">
+                     <Text size="1" color="red">Please enter the amount</Text>
+                  </Form.Message>
+                  <Form.Message match="typeMismatch">
+                     <Text size="1" color="red">Please provide a valid amount</Text>
+                  </Form.Message>
+                </Flex>
+              </Form.Field>
 
-            <Form.Field className="FormField" name="department">
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                <Form.Label className="FormLabel">Department</Form.Label>
-                <Form.Message className="FormMessage" match="valueMissing">
-                  Please enter the department
-                </Form.Message>
-              </div>
-              <Form.Control asChild>
-                <input className="FormControl" type="text" value={formData.department} onChange={handleChange} required />
-              </Form.Control>
-            </Form.Field>
+              <Form.Field name="department">
+                <Flex direction="column" gap="1">
+                  <Form.Label>
+                    <Text size="2" weight="medium">Department</Text>
+                  </Form.Label>
+                  <TextField.Input name="department" value={formData.department} onChange={handleChange} placeholder="e.g., Public Works Department" required />
+                  <Form.Message match="valueMissing">
+                    <Text size="1" color="red">Please enter the department</Text>
+                  </Form.Message>
+                </Flex>
+              </Form.Field>
 
-            <Form.Field className="FormField" name="date">
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                <Form.Label className="FormLabel">Date of Incident</Form.Label>
-                <Form.Message className="FormMessage" match="valueMissing">
-                  Please enter the date
-                </Form.Message>
-              </div>
-              <Form.Control asChild>
-                <input className="FormControl" type="date" value={formData.date} onChange={handleChange} required />
-              </Form.Control>
-            </Form.Field>
+              <Form.Field name="date">
+                <Flex direction="column" gap="1">
+                  <Form.Label>
+                    <Text size="2" weight="medium">Date of Incident</Text>
+                  </Form.Label>
+                  <TextField.Input name="date" type="date" value={formData.date} onChange={handleChange} required />
+                  <Form.Message match="valueMissing">
+                    <Text size="1" color="red">Please enter the date</Text>
+                  </Form.Message>
+                </Flex>
+              </Form.Field>
+            </Flex>
 
-            <div style={{ display: 'flex', marginTop: 25, justifyContent: 'flex-end', gap: '1rem' }}>
-              <Dialog.Close asChild>
-                <button type="button" className="Button secondary">Cancel</button>
-                {/* Add a .Button.secondary class for cancel: e.g., light grey bg, red text/border */}
+            <Flex gap="3" mt="5" justify="end">
+              <Dialog.Close>
+                <Button variant="soft" color="gray" type="button"> {/* type="button" is important for non-submit buttons in a form */}
+                  Cancel
+                </Button>
               </Dialog.Close>
-              <Form.Submit asChild>
-                <button className="Button primary">Submit Report</button>
-                 {/* Add a .Button.primary class or use default button styles */}
-              </Form.Submit>
-            </div>
+              <Dialog.Close>
+                <Form.Submit asChild>
+                  <Button type="submit">Submit Report</Button>
+                </Form.Submit>
+              </Dialog.Close>
+            </Flex>
           </Form.Root>
 
-          <Dialog.Close asChild>
-            <button className="IconButton" aria-label="Close">
+          <Dialog.Close>
+            <IconButton variant="ghost" color="gray"
+              style={{ position: 'absolute', top: 'var(--space-3)', right: 'var(--space-3)' }}
+              aria-label="Close"
+            >
               <Cross2Icon />
-            </button>
+            </IconButton>
           </Dialog.Close>
         </Dialog.Content>
       </Dialog.Portal>

@@ -1,5 +1,6 @@
 // src/DataCard.tsx
 import React from 'react';
+import { Card, Text, Heading } from '@radix-ui/themes';
 
 interface DataCardProps {
   title: string;
@@ -8,42 +9,27 @@ interface DataCardProps {
 
 const DataCard: React.FC<DataCardProps> = ({ title, value }) => {
   return (
-    <div style={{
-      backgroundColor: 'var(--light-bg)', // White background
-      border: `1px solid var(--border-color)`, // Subtle overall border
-      padding: '1.25rem 1.5rem', // Adjusted padding
-      borderRadius: '8px', // Slightly more rounded, common in modern UIs
-      color: 'var(--text-primary)',
-      marginBottom: '1rem', // Reduced margin if cards are close
-      minWidth: '220px',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.02)', // Very subtle shadow
-      transition: 'box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out',
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.04)';
-      e.currentTarget.style.borderColor = 'var(--border-color-strong)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.02)';
-      e.currentTarget.style.borderColor = 'var(--border-color)';
-    }}
+    <Card
+      size="2" // Radix Card size prop
+      style={{
+        minWidth: '220px',
+        // Radix card comes with its own shadow and border, can be customized further if needed
+        // transition for hover effects can be managed with Radix's theming or custom CSS if complex
+      }}
+      // Radix <Card> does not have direct onMouseEnter/Leave props for style changes like this.
+      // This would typically be handled by CSS :hover pseudo-classes or by wrapping
+      // the Card in a Box and applying event handlers or by using Radix's state attributes if available.
+      // For simplicity, we'll rely on default Card styling or global :hover styles if defined.
     >
-      <h3 style={{
-        margin: '0 0 0.375rem 0', // Tighter margin for title (0.375rem = 6px)
-        fontSize: '0.875rem', // Smaller, more common for card titles (0.875rem = 14px)
-        color: 'var(--text-secondary)', // Secondary text color for title
-        fontWeight: 500, // Medium weight for title
-        textTransform: 'uppercase', // Uppercase titles are common in this style
-        letterSpacing: '0.025em', // Slight letter spacing
-      }}>{title}</h3>
-      <p style={{
-        margin: 0,
-        fontSize: '1.75rem', // Slightly adjusted value size (1.75rem = 28px)
-        fontWeight: 600, // Bolder for the value
-        color: 'var(--text-primary)',
-        lineHeight: 1.2, // Ensure value doesn't take too much vertical space
-      }}>{value}</p>
-    </div>
+      <Text as="div" size="1" color="gray" mb="1" transform="uppercase" weight="medium" letterSpacing="1">
+        {/* Using Text component for title with Radix props */}
+        {title}
+      </Text>
+      <Heading as="h3" size="6" weight="bold" color="gray">
+        {/* Using Heading for value */}
+        {value}
+      </Heading>
+    </Card>
   );
 };
 
